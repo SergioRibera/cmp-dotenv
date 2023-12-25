@@ -1,5 +1,5 @@
 {
-  description = "Neovim Nix flake CI template for GitHub Actions"; # TODO: Set description
+  description = "Neovim cmp-env";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -29,7 +29,7 @@
     neodev-nvim,
     ...
   }: let
-    name = "plugin-template.nvim"; # TODO: Choose a name
+    name = "cmp-env";
 
     plugin-overlay = import ./nix/plugin-overlay.nix {
       inherit name self;
@@ -105,7 +105,7 @@
         };
 
         devShell = pkgs.nvim-nightly-tests.overrideAttrs (oa: {
-          name = "devShell"; # TODO: Choose a name
+          name = "devShell";
           inherit (pre-commit-check) shellHook;
           buildInputs = with pre-commit-hooks.packages.${system};
             [
