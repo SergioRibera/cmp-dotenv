@@ -22,7 +22,7 @@ function M.set_env_variable(name, value, docs)
 end
 
 function M.load(opts)
-  if #M.env_variables > 0 then
+  if vim.tbl_count(M.env_variables) > 0 then
     return
   end
 
@@ -50,7 +50,7 @@ function M.load(opts)
 end
 
 function M.as_completion(opts)
-  if #M.completion_items > 0 then
+  if vim.tbl_count(M.completion_items) > 0 then
     return M.completion_items
   end
 
