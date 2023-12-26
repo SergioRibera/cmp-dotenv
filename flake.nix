@@ -29,7 +29,7 @@
     neodev-nvim,
     ...
   }: let
-    name = "cmp-env";
+    name = "cmp-dotenv";
 
     plugin-overlay = import ./nix/plugin-overlay.nix {
       inherit name self;
