@@ -1,4 +1,4 @@
-local load = require('cmp-env.load')
+local load = require('cmp-dotenv.load')
 local M = {}
 
 M.completion_items = {}
@@ -16,31 +16,36 @@ M.get_all_env = function()
   return M.env_variables
 end
 
-function M.set_env_variable(name, value, doc)
-  local docs = '> From lua invocation\n' .. doc
+function M.set_env_variable(name, value, docs)
   vim.env[name] = value
   M.env_variables[name] = { value = value, docs = docs }
 end
 
--- TODO: support markdown docs as commentary up to value definition
-function M.load()
+function M.load(opts)
   if #M.env_variables > 0 then
     return
   end
 
-  local files = vim.fs.find('.env', { upward = true, type = 'file' })
+  local raw_files = vim.fn.globpath(opts.path, '.env*', false, true)
+  local files = vim.tbl_filter(function(v)
+    return vim.regex('**/\\.env\\%(\\.' .. opts.dotenv_environment .. '\\)\\?$'):match_str(v) or false
+  end, raw_files)
+
+  table.sort(files, opts.file_priority)
 
   for i = 1, #files do
     local file = files[i]
     local data = load.load_data(file, false)
-    for key, value in pairs(data) do
-      M.set_env_variable(key, value)
+    for key, v in pairs(data) do
+      M.set_env_variable(key, v.value, v.docs)
     end
   end
 
-  local env_vars = vim.fn.environ()
-  for key, value in pairs(env_vars) do
-    M.set_env_variable(key, value)
+  if opts.load_shell then
+    local env_vars = vim.fn.environ()
+    for key, value in pairs(env_vars) do
+      M.env_variables[key] = { value = value, docs = '**From Shell**' }
+    end
   end
 end
 
@@ -56,13 +61,15 @@ function M.as_completion(opts)
       insertText = opts.eval_on_confirm and value or key,
       word = key,
       -- Show documentation if `show_documentation_window` is true
-      documentation = opts.show_documentation_window and {
-        kind = 'markdown',
+      documentation = opts.show_documentation and {
+        kind = opts.documentation_kind,
         value = value.docs,
       },
       kind = opts.item_kind,
     })
   end
+
+  return M.completion_items
 end
 
 return M

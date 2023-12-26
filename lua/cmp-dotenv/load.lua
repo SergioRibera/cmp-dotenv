@@ -44,11 +44,15 @@ function M.load_data_from_text(content)
   local data_loaded = {}
   local lines_arr = get_lines(content)
   if next(lines_arr) ~= nil then
+    local docs = nil
     for v in pairs(lines_arr) do
       local line = lines_arr[v]
       if not (line == nil or line == '') and string.sub(line, 1, 1) ~= '#' then
         local raw_values = split_str(line, '=')
-        data_loaded[raw_values[1]] = raw_values[2]
+        data_loaded[raw_values[1]] = { value = vim.trim(raw_values[2]), docs = docs and vim.trim(docs) or nil }
+        docs = nil
+      else
+        docs = (docs or '') .. vim.trim(string.sub(line, 2)) .. '\n'
       end
     end
   end
