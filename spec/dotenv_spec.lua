@@ -1,4 +1,5 @@
 local dotenv = require('cmp-dotenv.dotenv')
+local option = require('cmp-dotenv.option')
 
 local default_opts = {
   path = './spec/dotenv',
@@ -13,7 +14,8 @@ local default_opts = {
 describe('Load dotenv workspace', function()
   it('Load env text', function()
     dotenv.env_variables = {}
-    dotenv.load(default_opts)
+    option.set(default_opts)
+    dotenv.load()
     local all_env = dotenv.get_all_env()
     assert.are.same(3, vim.tbl_count(all_env))
     assert.are.same({ value = 'Hello From Local', docs = 'Local Documentation' }, all_env.VARIABLE)
@@ -24,7 +26,8 @@ describe('Load dotenv workspace', function()
   it('Load local env variables', function()
     dotenv.env_variables = {}
     local opt = vim.tbl_deep_extend('keep', { dotenv_environment = 'local' }, default_opts)
-    dotenv.load(opt)
+    option.set(opt)
+    dotenv.load()
     local all_env = dotenv.get_all_env()
     assert.are.same(3, vim.tbl_count(all_env))
     assert.are.same({ value = 'Hello From Local', docs = 'Local Documentation' }, all_env.VARIABLE)
@@ -34,7 +37,8 @@ describe('Load dotenv workspace', function()
   it('Load example env variables', function()
     dotenv.env_variables = {}
     local opt = vim.tbl_deep_extend('keep', { dotenv_environment = 'example' }, default_opts)
-    dotenv.load(opt)
+    option.set(opt)
+    dotenv.load()
     local all_env = dotenv.get_all_env()
     assert.are.same(2, vim.tbl_count(all_env))
   end)

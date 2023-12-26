@@ -1,4 +1,6 @@
 local load = require('cmp-dotenv.load')
+local option = require('cmp-dotenv.option')
+
 local M = {}
 
 M.completion_items = {}
@@ -21,10 +23,11 @@ function M.set_env_variable(name, value, docs)
   M.env_variables[name] = { value = value, docs = docs }
 end
 
-function M.load(opts)
+function M.load()
   if vim.tbl_count(M.env_variables) > 0 then
     return
   end
+  local opts = option.get()
 
   local raw_files = vim.fn.globpath(opts.path, '.env*', false, true)
   local files = vim.tbl_filter(function(v)
@@ -49,10 +52,11 @@ function M.load(opts)
   end
 end
 
-function M.as_completion(opts)
+function M.as_completion()
   if vim.tbl_count(M.completion_items) > 0 then
     return M.completion_items
   end
+  local opts = option.get()
 
   for key, value in pairs(M.env_variables) do
     table.insert(M.completion_items, {
@@ -63,7 +67,7 @@ function M.as_completion(opts)
       -- Show documentation if `show_documentation_window` is true
       documentation = opts.show_documentation and {
         kind = opts.documentation_kind,
-        value = value.docs,
+        value = value.docs .. '\n\nContent: ' .. value,
       },
       kind = opts.item_kind,
     })
