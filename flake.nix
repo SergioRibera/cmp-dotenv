@@ -73,7 +73,6 @@
             luacheck.enable = true;
             lua-ls.enable = true;
             editorconfig-checker.enable = true;
-            markdownlint.enable = true;
           };
           settings = {
             lua-ls = {
@@ -114,7 +113,6 @@
               stylua
               luacheck
               editorconfig-checker
-              markdownlint-cli
             ]
             ++ oa.buildInputs;
         });
