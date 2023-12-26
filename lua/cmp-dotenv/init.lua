@@ -21,7 +21,7 @@ source.new = function()
 end
 
 source.get_keyword_pattern = function()
-  return '\\$[^[:blank:]]*'
+  return [[\k\+]]
 end
 
 source._validate_option = function(_, params)
