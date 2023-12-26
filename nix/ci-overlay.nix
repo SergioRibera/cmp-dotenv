@@ -21,8 +21,9 @@ with final.stdenv; let
     nvim-wrapped = final.pkgs.wrapNeovim nvim {
       configure = {
         packages.myVimPackage = {
-          start = [
+          start = with final.pkgs.vimPlugins; [
             # Add plugin dependencies that aren't on LuaRocks here
+            nvim-cmp
           ];
         };
       };
