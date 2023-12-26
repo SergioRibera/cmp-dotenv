@@ -29,6 +29,7 @@ cmp.setup {
             item_kind = cmp.lsp.CompletionItemKind.Variable,
             eval_on_confirm = false,
             show_documentation = true,
+            show_content_on_docs = true,
             documentation_kind = 'markdown',
             dotenv_environment = '.*',
             file_priority = function(a, b)
@@ -43,16 +44,17 @@ cmp.setup {
 
 ## Options
 
-| name               | default                                                                              | description                                                                                                                                                                              |
-|--------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| path               | '.'                                                                                  | The path where to look for the files                                                                                                                                                     |
-| load_shell         | true                                                                                 | Do you want to load shell variables?                                                                                                                                                     |
-| item_kind          | [Variable](https://github.com/hrsh7th/nvim-cmp/blob/main/lua/cmp/types/lsp.lua#L178) | What kind of suggestion will cmp make?                                                                                                                                                   |
-| eval_on_confirm    | false                                                                                | When you confirm the completion, do you want the variable or the value?                                                                                                                  |
-| show_documentation | true                                                                                 | Do you want to see the documentation that has the variable?                                                                                                                              |
-| documentation_kind | 'markdown'                                                                           | What did you write the variable documentation on?                                                                                                                                        |
-| dotenv_environment | '.*'                                                                                 | Which variable environment do you want to load? `.*` by default loads all of them, this variable accepts regex, some suggestions I can give you are `example`, `local` or `development`. |
-| file_priority      | function                                                                             | With this function you define the upload priority, by default it prioritizes the local variables, this responds to the callback of a computer for the found files.                       |
+| name                 | default                                                                              | description                                                                                                                                                                              |
+|----------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| path                 | '.'                                                                                  | The path where to look for the files                                                                                                                                                     |
+| load_shell           | true                                                                                 | Do you want to load shell variables?                                                                                                                                                     |
+| item_kind            | [Variable](https://github.com/hrsh7th/nvim-cmp/blob/main/lua/cmp/types/lsp.lua#L178) | What kind of suggestion will cmp make?                                                                                                                                                   |
+| eval_on_confirm      | false                                                                                | When you confirm the completion, do you want the variable or the value?                                                                                                                  |
+| show_documentation   | true                                                                                 | Do you want to see the documentation that has the variable?                                                                                                                              |
+| show_content_on_docs | true                                                                                 | Allows to preview the content in the documentation popup with the prefix of `Content: `.                                                                                                 |
+| documentation_kind   | 'markdown'                                                                           | What did you write the variable documentation on?                                                                                                                                        |
+| dotenv_environment   | '.*'                                                                                 | Which variable environment do you want to load? `.*` by default loads all of them, this variable accepts regex, some suggestions I can give you are `example`, `local` or `development`. |
+| file_priority        | function                                                                             | With this function you define the upload priority, by default it prioritizes the local variables, this responds to the callback of a computer for the found files.                       |
 
 ## Advanced Usage
 
@@ -79,7 +81,12 @@ dotenv.set_env_variable(name, value, docs or nil)
 -- configuration you have from the files or the shell,
 -- I do not recommend calling this function as it is
 -- usually called by default by cmp.
-dotenv.load(opts)
+dotenv.load()
+
+-- You need to do this before calling the load function
+-- or else `load()` will take the cmp configuration or the default one.
+local option = require('cmp-dotenv.option')
+option.set(opts)
 ```
 
 ## Contributing

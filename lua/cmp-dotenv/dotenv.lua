@@ -67,7 +67,7 @@ function M.as_completion()
       -- Show documentation if `show_documentation_window` is true
       documentation = opts.show_documentation and {
         kind = opts.documentation_kind,
-        value = v.docs .. '\n\nContent: ' .. v.value,
+        value = v.docs .. opts.show_content_on_docs and '\n\nContent: ' .. v.value or '',
       },
       kind = opts.item_kind,
     })

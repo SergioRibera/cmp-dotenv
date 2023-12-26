@@ -10,6 +10,7 @@ local defaults = {
   item_kind = cmp.lsp.CompletionItemKind.Variable,
   eval_on_confirm = false,
   show_documentation = true,
+  show_content_on_docs = true,
   documentation_kind = 'markdown',
   dotenv_environment = '.*', -- local,example or .* for any
   file_priority = function(a, b)
