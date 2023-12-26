@@ -58,16 +58,16 @@ function M.as_completion()
   end
   local opts = option.get()
 
-  for key, value in pairs(M.env_variables) do
+  for key, v in pairs(M.env_variables) do
     table.insert(M.completion_items, {
       label = key,
       -- Evaluate the environment variable if `eval_on_confirm` is true
-      insertText = opts.eval_on_confirm and value or key,
+      insertText = opts.eval_on_confirm and v.value or key,
       word = key,
       -- Show documentation if `show_documentation_window` is true
       documentation = opts.show_documentation and {
         kind = opts.documentation_kind,
-        value = value.docs .. '\n\nContent: ' .. value,
+        value = v.docs .. '\n\nContent: ' .. v.value,
       },
       kind = opts.item_kind,
     })
