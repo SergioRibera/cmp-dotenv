@@ -1,42 +1,86 @@
-# An opinionated Neovim Lua plugin template with a Nix CI
+# cmp-dotenv
 
-![Neovim](https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white)
-![Lua](https://img.shields.io/badge/lua-%232C2D72.svg?style=for-the-badge&logo=lua&logoColor=white)
-![Nix](https://img.shields.io/badge/nix-0175C2?style=for-the-badge&logo=NixOS&logoColor=white)
-
-This repository is a template for Neovim plugins written in Lua.
-
-## Features
-
-- GitHub Actions workflows with a locally reproducible CI,
-using [`nix` flakes](https://nixos.wiki/wiki/Flakes).
-- Run tests with both neovim stable and neovim nightly
-  using [`neorocksTest`](https://github.com/nvim-neorocks/neorocks).
-- Lints and a nix shell with pre-commit-hooks:
-  - [`luacheck`](https://github.com/mpeterv/luacheck)
-  - [`stylua`](https://github.com/JohnnyMorganz/StyLua)
-  - [`lua-language-server` static type checks](https://github.com/LuaLS/lua-language-server/wiki/Diagnosis-Report)
-  - [`alejandra`](https://github.com/kamadorueda/alejandra)
-  - [`editorconfig-checker`](https://github.com/editorconfig-checker/editorconfig-checker)
-  - [`markdownlint`](https://github.com/DavidAnson/markdownlint)
-- `vimPlugin` nix flake output.
-- Automatically publish tags to [LuaRocks](https://luarocks.org/labels/neovim)
-with the [luarocks-tag-release action](https://github.com/nvim-neorocks/luarocks-tag-release).
+The plugin you need to have an autocomplete of the environment variables of your system
+and those of your `.env*` files
 
 ## Setup
 
-1. Click on [Use this template](https://github.com/MrcJkb/nvim-lua-nix-plugin-template/generate)
-to start a repo based on this template. **Do _not_ fork it**.
-1. If your plugin depends on other plugins,
-add them to [`nvim-wrapped` in the `ci-overlay.nix`](./nix/ci-overlay.nix).
-1. Add the name of your plugin to [`flake.nix`](./flake.nix).
-1. Add [`plenary.nvim`](https://github.com/nvim-lua/plenary.nvim) specs
-to the `tests` directory.
-1. Create a [LuaRocks API key](https://luarocks.org/settings/api-keys).
-1. Add the API key to the repository's
-[GitHub Actions secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository).
-1. Text that needs to be updated is marked with `TODO:` comments.
-1. Rename [`plugin-template.nvim-scm-1.rockspec`](./plugin-template.nvim-scm-1.rockspec)
+```lua
+require("cmp").setup {
+    sources = {
+        { name = "dotenv" }
+    }
+}
+```
+
+Or with configuration
+
+```lua
+local cmp = require("cmp")
+
+cmp.setup {
+    sources = {
+        {
+          name = "env",
+          -- Defaults
+          option = {
+            path = '.',
+            load_shell = true,
+            item_kind = cmp.lsp.CompletionItemKind.Variable,
+            eval_on_confirm = false,
+            show_documentation = true,
+            documentation_kind = 'markdown',
+            dotenv_environment = '.*',
+            file_priority = function(a, b)
+              -- Prioritizing local files
+              return a:upper() < b:upper()
+            end,
+          }
+        }
+    }
+}
+```
+
+## Options
+
+| name               | default                                                                              | description                                                                                                                                                                              |
+|--------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| path               | '.'                                                                                  | The path where to look for the files                                                                                                                                                     |
+| load_shell         | true                                                                                 | Do you want to load shell variables?                                                                                                                                                     |
+| item_kind          | [Variable](https://github.com/hrsh7th/nvim-cmp/blob/main/lua/cmp/types/lsp.lua#L178) | What kind of suggestion will cmp make?                                                                                                                                                   |
+| eval_on_confirm    | false                                                                                | When you confirm the completion, do you want the variable or the value?                                                                                                                  |
+| show_documentation | true                                                                                 | Do you want to see the documentation that has the variable?                                                                                                                              |
+| documentation_kind | 'markdown'                                                                           | What did you write the variable documentation on?                                                                                                                                        |
+| dotenv_environment | '.*'                                                                                 | Which variable environment do you want to load? `.*` by default loads all of them, this variable accepts regex, some suggestions I can give you are `example`, `local` or `development`. |
+| file_priority      | function                                                                             | With this function you define the upload priority, by default it prioritizes the local variables, this responds to the callback of a computer for the found files.                       |
+
+## Advanced Usage
+
+If you are a developer or just want to do more things in your lua configuration,
+you can use the api provided here and the (recommended) functions available, are these
+
+```lua
+local dotenv = require('cmp-dotenv.dotenv')
+
+-- Get the variable you want by name or
+-- get the default value in case it does not exist.
+dotenv.get_env_variable(name, default)
+
+-- Get all variables that have been loaded
+dotenv.get_all_env()
+
+-- You can set a variable to the auto-completion system and
+-- find it available throughout the Neovim environment.
+-- You can pass it a documentation in the format
+-- you have configured or not pass it at all.
+dotenv.set_env_variable(name, value, docs or nil)
+
+-- This loads all the environment variables according to the
+-- configuration you have from the files or the shell,
+-- I do not recommend calling this function as it is
+-- usually called by default by cmp.
+dotenv.load(opts)
+```
 
 ## Contributing
 
