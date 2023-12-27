@@ -1,4 +1,10 @@
 # cmp-dotenv
+https://github.com/SergioRibera/cmp-dotenv/assets/56278796/8a23c17a-6f08-45db-b567-de47cd9a8a81
+
+|  Wihtout cmp-dotenv  | With cmp-dotenv |
+|----------------------|-----------------|
+| ![image](https://github.com/SergioRibera/cmp-dotenv/assets/56278796/28c1123a-62b5-414d-8b54-4705dffbe966) | ![image](https://github.com/SergioRibera/cmp-dotenv/assets/56278796/f5206b0a-7ee3-4592-9a79-1bce85146d57) |
+
 
 The plugin you need to have an autocomplete of the environment variables of your system
 and those of your `.env*` files
