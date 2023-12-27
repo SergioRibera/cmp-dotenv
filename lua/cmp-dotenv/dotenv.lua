@@ -36,18 +36,18 @@ function M.load()
 
   table.sort(files, opts.file_priority)
 
+  if opts.load_shell then
+    local env_vars = vim.fn.environ()
+    for key, value in pairs(env_vars) do
+      M.env_variables[key] = { value = value, docs = '**From Shell**' }
+    end
+  end
+
   for i = 1, #files do
     local file = files[i]
     local data = load.load_data(file, false)
     for key, v in pairs(data) do
       M.set_env_variable(key, v.value, v.docs)
-    end
-  end
-
-  if opts.load_shell then
-    local env_vars = vim.fn.environ()
-    for key, value in pairs(env_vars) do
-      M.env_variables[key] = { value = value, docs = '**From Shell**' }
     end
   end
 end
