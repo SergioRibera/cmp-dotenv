@@ -3,8 +3,7 @@ https://github.com/SergioRibera/cmp-dotenv/assets/56278796/8a23c17a-6f08-45db-b5
 
 |  Wihtout cmp-dotenv  | With cmp-dotenv |
 |----------------------|-----------------|
-| ![image](https://github.com/SergioRibera/cmp-dotenv/assets/56278796/28c1123a-62b5-414d-8b54-4705dffbe966) | ![image](https://github.com/SergioRibera/cmp-dotenv/assets/56278796/30aa4131-28f7-4295-82aa-9cf7df279647)
- |
+| ![image](https://github.com/SergioRibera/cmp-dotenv/assets/56278796/28c1123a-62b5-414d-8b54-4705dffbe966) | ![image](https://github.com/SergioRibera/cmp-dotenv/assets/56278796/30aa4131-28f7-4295-82aa-9cf7df279647) |
 
 
 The plugin you need to have an autocomplete of the environment variables of your system
