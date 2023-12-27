@@ -27,7 +27,10 @@ describe('Load dotenv workspace', function()
     dotenv.load()
     local all_env = dotenv.get_all_env()
     assert.are.same(3, vim.tbl_count(all_env))
-    assert.are.same({ value = 'Hello From Local', docs = 'Local Documentation' }, all_env.VARIABLE)
+    assert.are.same(
+      { value = 'Hello From Local', docs = 'Local Documentation\n\nLocal Documentation Next Line' },
+      all_env.VARIABLE
+    )
     assert.are.same({ value = 'Local Data', docs = nil }, all_env.LOCAL_VAR)
     assert.are.same({ value = 'Other Local Value', docs = 'Local Test' }, all_env.OTHER_VARIABLE)
   end)
@@ -39,7 +42,10 @@ describe('Load dotenv workspace', function()
     dotenv.load()
     local all_env = dotenv.get_all_env()
     assert.are.same(3, vim.tbl_count(all_env))
-    assert.are.same({ value = 'Hello From Local', docs = 'Local Documentation' }, all_env.VARIABLE)
+    assert.are.same(
+      { value = 'Hello From Local', docs = 'Local Documentation\n\nLocal Documentation Next Line' },
+      all_env.VARIABLE
+    )
     assert.are.same({ value = 'Local Data', docs = nil }, all_env.LOCAL_VAR)
   end)
 
@@ -65,6 +71,9 @@ describe('Completion dotenv workspace', function()
     local variable = tbl_find(all, 'VARIABLE')
     assert.are.same('VARIABLE', variable.label)
     assert.are.same('VARIABLE', variable.insertText)
-    assert.are.same('Local Documentation\n\nContent: Hello From Local', variable.documentation.value)
+    assert.are.same(
+      'Local Documentation\n\nLocal Documentation Next Line\n\nContent: Hello From Local',
+      variable.documentation.value
+    )
   end)
 end)

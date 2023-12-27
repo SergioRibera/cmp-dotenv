@@ -64,7 +64,7 @@ function M.as_completion()
       docs = 'Content: ' .. v.value
     end
 
-    if v.docs then
+    if v.docs ~= nil then
       docs = v.docs .. '\n\n' .. docs
     end
 
