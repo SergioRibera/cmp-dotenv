@@ -2,7 +2,6 @@ local cmp = require('cmp')
 local config = require('cmp.config')
 
 local option = {}
-option.opts = nil
 
 local defaults = {
   path = '.',
@@ -18,13 +17,13 @@ local defaults = {
   end,
 }
 
-function option.set(options)
-  option.opts = options
-end
-
 function option.get(options)
-  local opt = options or option.opts or config.get_source_config('dotenv').option
-  return vim.tbl_deep_extend('keep', opt or {}, defaults)
+  local cmp_opt = {}
+  if config and config.get_source_config('dotenv') then
+    cmp_opt = config.get_source_config('dotenv').option
+  end
+  local opt = options or cmp_opt
+  return vim.tbl_deep_extend('keep', opt, defaults)
 end
 
 return option
