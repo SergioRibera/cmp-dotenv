@@ -3,6 +3,7 @@ local option = require('cmp-dotenv.option')
 
 local M = {}
 
+M.files = {}
 M.completion_items = {}
 M.env_variables = {}
 
@@ -23,41 +24,7 @@ function M.set_env_variable(name, value, docs)
   M.env_variables[name] = { value = value, docs = docs }
 end
 
-function M.load()
-  if vim.tbl_count(M.env_variables) > 0 then
-    return
-  end
-  local opts = option.get()
-
-  local raw_files = vim.fn.globpath(opts.path, '.env*', false, true)
-  local files = vim.tbl_filter(function(v)
-    return vim.regex('**/\\.env\\%(\\.' .. opts.dotenv_environment .. '\\)\\?$'):match_str(v) or false
-  end, raw_files)
-
-  table.sort(files, opts.file_priority)
-
-  if opts.load_shell then
-    local env_vars = vim.fn.environ()
-    for key, value in pairs(env_vars) do
-      M.env_variables[key] = { value = value, docs = '**From Shell**' }
-    end
-  end
-
-  for i = 1, #files do
-    local file = files[i]
-    local data = load.load_data(file, false)
-    for key, v in pairs(data) do
-      M.set_env_variable(key, v.value, v.docs)
-    end
-  end
-end
-
-function M.as_completion()
-  if vim.tbl_count(M.completion_items) > 0 then
-    return M.completion_items
-  end
-  local opts = option.get()
-
+local function build_completions(opts)
   for key, v in pairs(M.env_variables) do
     local docs = ''
     if opts.show_content_on_docs then
@@ -79,7 +46,55 @@ function M.as_completion()
       kind = opts.item_kind,
     })
   end
+end
 
+function M.load(force, options)
+  if vim.tbl_count(M.env_variables) > 0 or force then
+    return
+  end
+  local opts = option.get(options)
+
+  local raw_files = vim.fn.globpath(opts.path, '.env*', false, true)
+  local files = vim.tbl_filter(function(v)
+    return vim.regex('**/\\.env\\%(\\.' .. opts.dotenv_environment .. '\\)\\?$'):match_str(v) or false
+  end, raw_files)
+
+  table.sort(files, opts.file_priority)
+
+  -- Get files not cached
+  local diff_files = vim.tbl_filter(function(v)
+    return not vim.tbl_get(M.files, v)
+  end, files)
+
+  -- If the new file list is same as cached
+  -- return
+  if vim.tbl_count(diff_files) == 0 and vim.tbl_count(M.env_variables) > 0 then
+    return
+  end
+
+  M.files = files
+  M.env_variables = {}
+  M.completion_items = {}
+
+  if opts.load_shell then
+    local env_vars = vim.fn.environ()
+    for key, value in pairs(env_vars) do
+      M.env_variables[key] = { value = value, docs = '**From Shell**' }
+    end
+  end
+
+  for i = 1, #M.files do
+    local file = M.files[i]
+    local data = load.load_data(file, false)
+    for key, v in pairs(data) do
+      M.set_env_variable(key, v.value, v.docs)
+    end
+  end
+
+  build_completions(opts)
+end
+
+function M.as_completion()
   return M.completion_items
 end
 

@@ -87,12 +87,7 @@ dotenv.set_env_variable(name, value, docs or nil)
 -- configuration you have from the files or the shell,
 -- I do not recommend calling this function as it is
 -- usually called by default by cmp.
-dotenv.load()
-
--- You need to do this before calling the load function
--- or else `load()` will take the cmp configuration or the default one.
-local option = require('cmp-dotenv.option')
-option.set(opts)
+dotenv.load(force, options)
 ```
 
 ## Contributing

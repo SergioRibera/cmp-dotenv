@@ -1,5 +1,4 @@
 local dotenv = require('cmp-dotenv.dotenv')
-local option = require('cmp-dotenv.option')
 
 local default_opts = {
   path = './spec/dotenv',
@@ -23,8 +22,7 @@ end
 describe('Load dotenv workspace', function()
   it('Load env text', function()
     dotenv.env_variables = {}
-    option.set(default_opts)
-    dotenv.load()
+    dotenv.load(nil, default_opts)
     local all_env = dotenv.get_all_env()
     assert.are.same(3, vim.tbl_count(all_env))
     assert.are.same(
@@ -38,8 +36,7 @@ describe('Load dotenv workspace', function()
   it('Load local env variables', function()
     dotenv.env_variables = {}
     local opt = vim.tbl_deep_extend('keep', { dotenv_environment = 'local' }, default_opts)
-    option.set(opt)
-    dotenv.load()
+    dotenv.load(nil, opt)
     local all_env = dotenv.get_all_env()
     assert.are.same(3, vim.tbl_count(all_env))
     assert.are.same(
@@ -52,8 +49,7 @@ describe('Load dotenv workspace', function()
   it('Load example env variables', function()
     dotenv.env_variables = {}
     local opt = vim.tbl_deep_extend('keep', { dotenv_environment = 'example' }, default_opts)
-    option.set(opt)
-    dotenv.load()
+    dotenv.load(nil, opt)
     local all_env = dotenv.get_all_env()
     assert.are.same(2, vim.tbl_count(all_env))
   end)
@@ -62,8 +58,7 @@ end)
 describe('Completion dotenv workspace', function()
   it('Load completion table', function()
     dotenv.env_variables = {}
-    option.set(default_opts)
-    dotenv.load()
+    dotenv.load(nil, default_opts)
     local all = dotenv.as_completion()
 
     assert.are.same(3, vim.tbl_count(all))
