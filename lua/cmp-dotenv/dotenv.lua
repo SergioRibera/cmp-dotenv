@@ -1,7 +1,9 @@
 local load = require('cmp-dotenv.load')
 local option = require('cmp-dotenv.option')
+local utils = require('cmp-dotenv.utils')
 
 local M = {}
+M.__index = M
 
 M.files = {}
 M.completion_items = {}
@@ -24,32 +26,8 @@ function M.set_env_variable(name, value, docs)
   M.env_variables[name] = { value = value, docs = docs }
 end
 
-local function build_completions(opts)
-  for key, v in pairs(M.env_variables) do
-    local docs = ''
-    if opts.show_content_on_docs then
-      docs = 'Content: ' .. v.value
-    end
-
-    if v.docs ~= nil then
-      docs = v.docs .. '\n\n' .. docs
-    end
-
-    table.insert(M.completion_items, {
-      label = key,
-      insertText = opts.eval_on_confirm and v.value or key,
-      word = key,
-      documentation = opts.show_documentation and {
-        kind = opts.documentation_kind,
-        value = docs,
-      },
-      kind = opts.item_kind,
-    })
-  end
-end
-
 function M.load(force, options)
-  if vim.tbl_count(M.env_variables) > 0 or force then
+  if vim.tbl_count(M.env_variables) > 0 and force ~= nil and not force then
     return
   end
   local opts = option.get(options)
@@ -68,13 +46,13 @@ function M.load(force, options)
 
   -- If the new file list is same as cached
   -- return
-  if vim.tbl_count(diff_files) == 0 and vim.tbl_count(M.env_variables) > 0 then
+  if vim.tbl_count(diff_files) == 0 and vim.tbl_count(M.env_variables) > 0 and force ~= nil and not force then
     return
   end
 
   M.files = files
-  M.env_variables = {}
-  M.completion_items = {}
+  utils.clear_table(M.env_variables)
+  utils.clear_table(M.completion_items)
 
   if opts.load_shell then
     local env_vars = vim.fn.environ()
@@ -91,7 +69,7 @@ function M.load(force, options)
     end
   end
 
-  build_completions(opts)
+  utils.build_completions(M, opts)
 end
 
 function M.as_completion()

@@ -21,8 +21,7 @@ end
 
 describe('Load dotenv workspace', function()
   it('Load env text', function()
-    dotenv.env_variables = {}
-    dotenv.load(nil, default_opts)
+    dotenv.load(true, default_opts)
     local all_env = dotenv.get_all_env()
     assert.are.same(3, vim.tbl_count(all_env))
     assert.are.same(
@@ -34,9 +33,8 @@ describe('Load dotenv workspace', function()
   end)
 
   it('Load local env variables', function()
-    dotenv.env_variables = {}
     local opt = vim.tbl_deep_extend('keep', { dotenv_environment = 'local' }, default_opts)
-    dotenv.load(nil, opt)
+    dotenv.load(true, opt)
     local all_env = dotenv.get_all_env()
     assert.are.same(3, vim.tbl_count(all_env))
     assert.are.same(
@@ -47,9 +45,8 @@ describe('Load dotenv workspace', function()
   end)
 
   it('Load example env variables', function()
-    dotenv.env_variables = {}
     local opt = vim.tbl_deep_extend('keep', { dotenv_environment = 'example' }, default_opts)
-    dotenv.load(nil, opt)
+    dotenv.load(true, opt)
     local all_env = dotenv.get_all_env()
     assert.are.same(2, vim.tbl_count(all_env))
   end)
@@ -57,8 +54,7 @@ end)
 
 describe('Completion dotenv workspace', function()
   it('Load completion table', function()
-    dotenv.env_variables = {}
-    dotenv.load(nil, default_opts)
+    dotenv.load(true, default_opts)
     local all = dotenv.as_completion()
 
     assert.are.same(3, vim.tbl_count(all))
