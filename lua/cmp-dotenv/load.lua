@@ -49,7 +49,8 @@ function M.load_data_from_text(content)
       local line = lines_arr[v]
       if not (line == nil or line == '') and string.sub(line, 1, 1) ~= '#' then
         local raw_values = split_str(line, '=')
-        data_loaded[raw_values[1]] = { value = vim.trim(raw_values[2]), docs = docs and vim.trim(docs) or nil }
+        local value = raw_values[2] and vim.trim(raw_values[2]) or ''
+        data_loaded[raw_values[1]] = { value = value, docs = docs and vim.trim(docs) or nil }
         docs = nil
       else
         docs = (docs or '') .. vim.trim(string.sub(line, 2)) .. '\n'
