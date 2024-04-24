@@ -9,6 +9,9 @@ https://github.com/SergioRibera/cmp-dotenv/assets/56278796/8a23c17a-6f08-45db-b5
 The plugin you need to have an autocomplete of the environment variables of your system
 and those of your `.env*` files
 
+> [!IMPORTANT]
+> This repository does not require constant updates but if you have any problems or feature suggestions open an [issue](https://github.com/SergioRibera/cmp-dotenv/issues) and I will be happy to check it out.
+
 ## Setup
 
 ```lua
