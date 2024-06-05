@@ -30,7 +30,7 @@ local cmp = require("cmp")
 cmp.setup {
     sources = {
         {
-          name = "env",
+          name = "dotenv",
           -- Defaults
           option = {
             path = '.',
